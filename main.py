@@ -4,6 +4,39 @@ def avg(values_dict):
         all_grades += grades
     return sum(all_grades) / len(all_grades) if all_grades else 0
 
+class Mentor:
+    def __init__(self, name, surname):
+        self.name = name
+        self.surname = surname
+        self.courses_attached = []
+
+
+class Lecturer(Mentor):
+    def __init__(self, name, surname):
+        super().__init__(name, surname)
+        self.grades = {}
+
+    def average(self):
+        return avg(self.grades)
+
+    def __str__(self):
+        return (
+            f"Имя: {self.name}\n"
+            f"Фамилия: {self.surname}\n"
+            f"Средняя оценка за лекции: {self.average():.1f}"
+        )
+
+    def __lt__(self, other):
+        if isinstance(other, Lecturer):
+            return self.average() < other.average()
+        return NotImplemented
+
+    def __eq__(self, other):
+        if isinstance(other, Lecturer):
+            return self.average() == other.average()
+        return NotImplemented
+
+
 
 class Student:
     def __init__(self, name, surname, gender):
@@ -49,37 +82,6 @@ class Student:
             return self.average() == other.average()
         return NotImplemented
 
-class Mentor:
-    def __init__(self, name, surname):
-        self.name = name
-        self.surname = surname
-        self.courses_attached = []
-
-
-class Lecturer(Mentor):
-    def __init__(self, name, surname):
-        super().__init__(name, surname)
-        self.grades = {}
-
-    def average(self):
-        return avg(self.grades)
-
-    def __str__(self):
-        return (
-            f"Имя: {self.name}\n"
-            f"Фамилия: {self.surname}\n"
-            f"Средняя оценка за лекции: {self.average():.1f}"
-        )
-
-    def __lt__(self, other):
-        if isinstance(other, Lecturer):
-            return self.average() < other.average()
-        return NotImplemented
-
-    def __eq__(self, other):
-        if isinstance(other, Lecturer):
-            return self.average() == other.average()
-        return NotImplemented
 
 class Reviewer(Mentor):
     def rate_hw(self, student, course, grade):
@@ -100,6 +102,21 @@ class Reviewer(Mentor):
             f"Имя: {self.name}\n"
             f"Фамилия: {self.surname}"
         )
+
+def average_student_course(students, course):
+    all_grades = []
+    for student in students:
+        if course in student.grades:
+            all_grades += student.grades[course]
+    return sum(all_grades) / len(all_grades) if all_grades else 0
+
+def average_lecturer_course(lecturers, course):
+    all_grades = []
+    for lecturer in lecturers:
+        if course in lecturer.grades:
+            all_grades += lecturer.grades[course]
+    return sum(all_grades) / len(all_grades) if all_grades else 0
+
 lecturer = Lecturer('Иван', 'Иванов')
 reviewer = Reviewer('Пётр', 'Петров')
 student = Student('Алёхина', 'Ольга', 'Ж')
